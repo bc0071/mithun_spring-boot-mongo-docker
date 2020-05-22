@@ -1,0 +1,42 @@
+version: '3.1'
+
+services:
+  springboot:
+    image: dockerhandson/spring-boot-mongo:latest
+    restart: always # This will be ignored if we deploy in docker swarm
+    container_name: springboot
+    ports:
+      - 9090:8080
+    working_dir: /opt/app
+    depends_on:
+      - mongo
+    deploy:  # This will be considered only in docker swarm.
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 20s
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 5
+
+  mongo:
+    image: mongo
+    container_name: springboot-mongo
+#    ports:  # for demo/debug purpose only
+#      - 27018:27017
+    volumes:
+      - data:/data/db
+      - data-bkp:/data/bkp
+    restart: always
+    
+volumes:
+  data:
+    #external: true
+  data-bkp:
+    #external: true
+    
+networks:
+  default:
+    external:
+      name: customoverlay
