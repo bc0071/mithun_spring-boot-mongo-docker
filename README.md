@@ -35,4 +35,3 @@ docker ps -a
 
 ## License
 [Mithun Technologies](http://mithuntechnologies.co.in)
-vamsi
